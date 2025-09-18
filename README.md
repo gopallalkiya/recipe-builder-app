@@ -6,7 +6,6 @@ Angular application for creating and managing custom recipes with ingredient sel
 
 - **Angular 20**: Latest Angular framework with standalone components
 - **TypeScript**: Type-safe development
-- **SCSS**: Modern styling with CSS preprocessor
 - **Jest**: Unit testing framework
 - **Angular Signals**: Reactive state management
 
