@@ -1,0 +1,112 @@
+<form class="recipe-form" (ngSubmit)="saveRecipe()" #recipeForm="ngForm">
+  <div class="form-header">
+    <h1>Recipe Builder</h1>
+    <p>Create your custom recipe</p>
+  </div>
+
+  <div class="form-section">
+    <label class="form-label" for="recipeName">Recipe Name *</label>
+    <input 
+      id="recipeName"
+      name="recipeName"
+      type="text" 
+      placeholder="Enter recipe name"
+      [(ngModel)]="recipeName"
+      class="form-input"
+      maxlength="50"
+      required>
+  </div>
+
+  <div class="form-section">
+    <label class="form-label">Select Ingredients *</label>
+    @if (ingredients().length === 0) {
+      <p class="empty-state">No ingredients available</p>
+    } @else {
+      <div class="ingredient-groups">
+        @for (category of ['protein', 'vegetable', 'grain']; track category) {
+          @if (getIngredientsForCategory(category).length > 0) {
+            <fieldset class="ingredient-fieldset">
+              <legend>{{ category | titlecase }}</legend>
+              <div class="checkbox-group">
+                @for (ingredient of getIngredientsForCategory(category); track ingredient.id) {
+                <label class="checkbox-label">
+                  <input 
+                    type="checkbox"
+                    [checked]="isIngredientSelected(ingredient.id)"
+                    (change)="isIngredientSelected(ingredient.id) ? removeIngredient(ingredient.id) : addIngredient(ingredient.id)"
+                    class="checkbox-input">
+                  <span class="checkbox-custom"></span>
+                  <span class="ingredient-info">
+                    <span class="ingredient-name">{{ ingredient.name }}</span>
+                    <span class="ingredient-calories">{{ ingredient.calories }} cal</span>
+                  </span>
+                </label>
+                }
+              </div>
+            </fieldset>
+          }
+        }
+      </div>
+    }
+  </div>
+
+  @if (selectedIngredients().length > 0) {
+    <div class="form-section">
+      <label class="form-label">Selected Ingredients</label>
+      <div class="selected-ingredients">
+        @for (ingredientId of selectedIngredients(); track ingredientId) {
+          <div class="selected-tag">
+            {{ getIngredientName(ingredientId) }}
+            <button 
+              type="button"
+              (click)="removeIngredient(ingredientId)" 
+              class="remove-tag">×</button>
+          </div>
+        }
+      </div>
+      <div class="calorie-summary">
+        <strong>Total Calories: {{ totalCalories() }}</strong>
+      </div>
+    </div>
+  }
+
+  <div class="form-actions">
+    <button 
+      type="submit"
+      [disabled]="!canSave()"
+      class="submit-btn save-btn">
+      Save Recipe
+    </button>
+    <button 
+      type="button"
+      (click)="recipeName.set(''); selectedIngredients.set([])"
+      class="reset-btn">
+      Reset
+    </button>
+  </div>
+</form>
+
+<div class="saved-recipes">
+  <h2>Saved Recipes</h2>
+  @if (savedRecipes().length === 0) {
+    <p class="empty-state">No saved recipes yet. Create your first recipe above!</p>
+  } @else {
+    <div class="recipe-list">
+      @for (recipe of savedRecipes(); track recipe.id) {
+        <div class="recipe-card">
+          <div class="recipe-content">
+            <h3>{{ recipe.name }}</h3>
+            <p>{{ recipe.ingredients.length }} ingredients • {{ recipe.totalCalories }} calories</p>
+          </div>
+          <button 
+            type="button"
+            (click)="deleteRecipe(recipe.id)"
+            class="delete-btn"
+            title="Delete recipe">
+            x
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

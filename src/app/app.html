@@ -1,0 +1,6 @@
+<div class="app-container"> 
+  <app-recipe-builder 
+    [ingredients]="availableIngredients()"
+    (recipeCreated)="onRecipeCreated($event)">
+  </app-recipe-builder>
+</div>
